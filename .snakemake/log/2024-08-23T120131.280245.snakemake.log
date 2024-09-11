@@ -1,0 +1,37 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job                     count
+--------------------  -------
+isolate_system_fasta        1
+total                       1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Fri Aug 23 12:01:31 2024]
+localrule isolate_system_fasta:
+    input: /home/gridsan/cdoering/TaxFinder/CmdTAC.faa
+    output: input_fasta/config['system_name'].faa
+    jobid: 0
+    reason: Missing output files: input_fasta/config['system_name'].faa
+    resources: tmpdir=/state/partition1/slurm_tmp/26859384.0.0
+
+RuleException:
+NameError in file /home/gridsan/cdoering/TaxFinder/Snakefile, line 15:
+The name 'input' is unknown in this context. Please make sure that you defined that variable. Also note that braces not used for variable access have to be escaped by repeating them, i.e. {{print $1}}
+[Fri Aug 23 12:01:31 2024]
+Error in rule isolate_system_fasta:
+    jobid: 0
+    input: /home/gridsan/cdoering/TaxFinder/CmdTAC.faa
+    output: input_fasta/config['system_name'].faa
+    conda-env: /home/gridsan/cdoering/TaxFinder/.snakemake/conda/fb31173d950e6ab24c7f85f729ea8a24_
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-08-23T120131.280245.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

@@ -1,0 +1,3 @@
+SyntaxError in file /home/gridsan/cdoering/TaxFinder/Snakefile, line 22:
+Unexpected keyword scripts in rule definition:
+None

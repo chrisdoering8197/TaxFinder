@@ -1,0 +1,6 @@
+Building DAG of jobs...
+MissingInputException in rule feature_table_search in file /home/gridsan/cdoering/TaxFinder/Snakefile, line 31:
+Missing input files for rule feature_table_search:
+    output: results/CmdTAC_genomes_with_system.txt
+    affected files:
+        TODO
