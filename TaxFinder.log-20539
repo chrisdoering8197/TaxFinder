@@ -1,0 +1,47 @@
+Assuming unrestricted shared filesystem usage.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job           count
+----------  -------
+all               1
+phylo_tree        1
+total             2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 08:41:38 2025]
+localrule phylo_tree:
+    input: results/CmdTAC_genomes_with_system.parquet, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_tree.newick, results/CmdTAC_tree.svg
+    jobid: 1
+    reason: Missing output files: results/CmdTAC_tree.svg
+    wildcards: SYSNAME=CmdTAC
+    resources: tmpdir=/state/partition1/slurm_tmp/20539.4294967291.0
+
+Traceback (most recent call last):
+  File "/home/gridsan/cdoering/TaxFinder/.snakemake/scripts/tmpflr87qkt.phylo_tree.py", line 35, in <module>
+    lineages = pytaxonkit.lineage(taxid['TaxID'].tolist(),formatstr="{K};{p};{c};{o};{f};{g};{s}",fill_missing=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pytaxonkit.py", line 379, in lineage
+    raise TaxonKitCLIError(err)  # pragma: no cover
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pytaxonkit.TaxonKitCLIError: 08:41:42.671 [31m[ERRO][0m taxonomy data not found, please download and uncompress ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz, and copy "names.dmp", "nodes.dmp", "delnodes.dmp", and "merged.dmp" to /home/gridsan/cdoering/.taxonkit
+
+RuleException:
+CalledProcessError in file /home/gridsan/cdoering/TaxFinder/Snakefile, line 66:
+Command 'set -euo pipefail;  /home/gridsan/cdoering/.conda/envs/TaxFinder/bin/python3.12 /home/gridsan/cdoering/TaxFinder/.snakemake/scripts/tmpflr87qkt.phylo_tree.py' returned non-zero exit status 1.
+[Thu Mar 13 08:41:42 2025]
+Error in rule phylo_tree:
+    jobid: 1
+    input: results/CmdTAC_genomes_with_system.parquet, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_tree.newick, results/CmdTAC_tree.svg
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-03-13T084135.549281.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

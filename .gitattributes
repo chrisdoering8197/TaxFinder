@@ -1,0 +1,2 @@
+*.dmp filter=lfs diff=lfs merge=lfs -text
+taxon_db/*.dmp filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,23 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+feature_table_search        1
+tax_lineages                1
+total                       2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Mon Nov  4 11:24:46 2024]
+localrule feature_table_search:
+    input: phmmer_result/CmdTAC_phmmer.txt, /home/gridsan/cdoering/LaubLab_shared/all_refseq_feature_tables, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_genomes_with_system.txt
+    jobid: 1
+    reason: Missing output files: results/CmdTAC_genomes_with_system.txt
+    threads: 48
+    resources: tmpdir=/state/partition1/slurm_tmp/27321659.4294967291.0
+

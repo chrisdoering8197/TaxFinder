@@ -1,0 +1,79 @@
+Assuming unrestricted shared filesystem usage.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+all                         1
+feature_table_search        1
+phylo_tree                  1
+total                       3
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 08:20:03 2025]
+localrule feature_table_search:
+    input: phmmer_result/CmdTAC_phmmer.txt, /home/gridsan/cdoering/LaubLab_shared/All_RefSeq_Assemblies_Accessions.parquet, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_genomes_with_system.parquet
+    jobid: 2
+    reason: Missing output files: results/CmdTAC_genomes_with_system.parquet
+    threads: 48
+    resources: tmpdir=/state/partition1/slurm_tmp/20437.4294967291.0
+
+[Thu Mar 13 08:33:23 2025]
+Finished job 2.
+1 of 3 steps (33%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 08:33:23 2025]
+localrule phylo_tree:
+    input: results/CmdTAC_genomes_with_system.parquet, /home/gridsan/cdoering/LaubLab_shared/All_RefSeq_Assemblies_Accessions.parquet
+    output: results/CmdTAC_tree.newick, results/CmdTAC_tree.svg
+    jobid: 1
+    reason: Missing output files: results/CmdTAC_tree.svg; Input files updated by another job: results/CmdTAC_genomes_with_system.parquet
+    resources: tmpdir=/state/partition1/slurm_tmp/20437.4294967291.0
+
+Traceback (most recent call last):
+  File "/home/gridsan/cdoering/TaxFinder/.snakemake/scripts/tmpac736kek.phylo_tree.py", line 30, in <module>
+    taxid = pd.read_csv(all_taxid_path,sep = '\t',skiprows = 1,usecols = ['#assembly_accession','species_taxid'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1898, in _make_engine
+    return mapping[engine](f, **self.options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/gridsan/cdoering/.conda/envs/TaxFinder/lib/python3.12/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 93, in __init__
+    self._reader = parsers.TextReader(src, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "parsers.pyx", line 574, in pandas._libs.parsers.TextReader.__cinit__
+  File "parsers.pyx", line 663, in pandas._libs.parsers.TextReader._get_header
+  File "parsers.pyx", line 874, in pandas._libs.parsers.TextReader._tokenize_rows
+  File "parsers.pyx", line 891, in pandas._libs.parsers.TextReader._check_tokenize_status
+  File "parsers.pyx", line 2053, in pandas._libs.parsers.raise_parser_error
+  File "<frozen codecs>", line 322, in decode
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x8a in position 7: invalid start byte
+RuleException:
+CalledProcessError in file /home/gridsan/cdoering/TaxFinder/Snakefile, line 67:
+Command 'set -euo pipefail;  /home/gridsan/cdoering/.conda/envs/TaxFinder/bin/python3.12 /home/gridsan/cdoering/TaxFinder/.snakemake/scripts/tmpac736kek.phylo_tree.py' returned non-zero exit status 1.
+[Thu Mar 13 08:33:49 2025]
+Error in rule phylo_tree:
+    jobid: 1
+    input: results/CmdTAC_genomes_with_system.parquet, /home/gridsan/cdoering/LaubLab_shared/All_RefSeq_Assemblies_Accessions.parquet
+    output: results/CmdTAC_tree.newick, results/CmdTAC_tree.svg
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-03-13T081957.934848.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

@@ -1,18 +1,21 @@
-configfile: "inputs.yaml"
+configfile: "parameters.yaml"
 conda: "taxfinder.yaml"
 SYSNAME=config['system_name']
 
 rule all:
-    input:
-        f"results/{SYSNAME}_genomes_with_system.txt"
+   input:
+        f"results/{SYSNAME}_tree.svg"
         
-rule uncompress_taxonomy_files:
+rule decompress_taxonomy_files:
     input:
-        taxdump.tar.gz
+        "taxdump.tar.gz"
     output:
-        taxon_db/names.dmp
+        "taxon_db/names.dmp",
+        "taxon_db/nodes.dmp",
+        "taxon_db/delnodes.dmp",
+        "taxon_db/merged.dmp"
     shell:
-        "tar -x --directory=taxon_db taxdump.tar.gz"
+        "tar -xzf taxdump.tar.gz -C taxon_db"
     
 rule isolate_system_fasta:
     input:
@@ -42,29 +45,25 @@ rule feature_table_search:
         FT=os.path.expandvars(config["path_to_ft"]),
         taxa=os.path.expandvars(config["path_to_taxa_file"])
     output:
-        f"results/{SYSNAME}_genomes_with_system.txt"
+        f"results/{SYSNAME}_genomes_with_system.parquet"
     params:
         buffer=config["max_prot_buffer"],
-        protein_names=config["system_proteins"]
+        protein_names=config["system_proteins"],
     threads: 48
     script:
         "scripts/find_systems_in_FT.py"
         
-rule taxa_count_table:
+rule phylo_tree:
     input:
-        f"results/{SYSNAME}_genomes_with_system.txt"
+        hit_file=f"results/{SYSNAME}_genomes_with_system.parquet",
+        taxa=os.path.expandvars(config["path_to_taxa_file"])
+    params:
+        final_rank=config["final_rank"],
+        min_final_rank_size=config["min_final_rank_size"]
     output:
-        f"results/{SYSNAME}_taxa_count_table.txt"
-    scripts:
-        "scripts/taxa_count_table.py"
-        
-#rule phylo_tree:
-#    input:
-#        f"results/{SYSNAME}_genomes_with_system.txt"
-#    output:
-#        f"results/{SYSNAME}_tree.png"
-#    scripts:
-#        "scripts/phylo_tree.py"
+        multiext("results/{SYSNAME}_tree", ".newick", ".svg")
+    script:
+        "scripts/phylo_tree.py"
         
         
 

@@ -2,17 +2,20 @@ configfile: "inputs.yaml"
 conda: "taxfinder.yaml"
 SYSNAME=config['system_name']
 
-rule all:
-    input:
-        f"results/{SYSNAME}_genomes_with_system.txt"
+#rule all:
+#    input:
+#        "results/TODO"
         
-rule uncompress_taxonomy_files:
+rule decompress_taxonomy_files:
     input:
-        taxdump.tar.gz
+        "taxdump.tar.gz"
     output:
-        taxon_db/names.dmp
+        "taxon_db/names.dmp",
+        "taxon_db/nodes.dmp",
+        "taxon_db/delnodes.dmp",
+        "taxon_db/merged.dmp"
     shell:
-        "tar -x --directory=taxon_db taxdump.tar.gz"
+        "tar -xzf taxdump.tar.gz -C taxon_db"
     
 rule isolate_system_fasta:
     input:
@@ -45,18 +48,27 @@ rule feature_table_search:
         f"results/{SYSNAME}_genomes_with_system.txt"
     params:
         buffer=config["max_prot_buffer"],
-        protein_names=config["system_proteins"]
+        protein_names=config["system_proteins"],
+        proteinID_dict = config["path_to_proteinID_dict"]
     threads: 48
     script:
         "scripts/find_systems_in_FT.py"
         
-rule taxa_count_table:
+rule tax_lineages:
     input:
         f"results/{SYSNAME}_genomes_with_system.txt"
     output:
-        f"results/{SYSNAME}_taxa_count_table.txt"
-    scripts:
-        "scripts/taxa_count_table.py"
+        f"results/{SYSNAME}_tax_lineages.txt"
+    shell:
+        "cat {input} | taxonkit lineage -i 2 --data-dir taxon_db -o {output}"
+        
+#rule taxa_count_table:
+#    input:
+#        f"results/{SYSNAME}_tax_lineages.txt"
+#    output:
+#        f"results/{SYSNAME}_taxa_counts.txt"
+#    scripts:
+#        "scripts/taxa_count_table.py"
         
 #rule phylo_tree:
 #    input:

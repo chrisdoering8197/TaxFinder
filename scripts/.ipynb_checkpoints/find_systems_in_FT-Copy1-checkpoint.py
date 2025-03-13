@@ -1,7 +1,7 @@
 import glob
 import os
+import numpy as np
 import pandas as pd
-from joblib import Parallel, delayed
 from Bio import SearchIO
 from Bio import SeqIO
 from snakemake.script import snakemake
@@ -19,22 +19,22 @@ assemblySums = pd.read_csv(taxa_file_path,sep = '\t',skiprows = 1,usecols = ['#a
 Acc2Taxid = assemblySums.set_index('#assembly_accession')['species_taxid'].to_dict()  
 
 
-FT_headers = ['feature','class','assembly','assembly_unit','seq_type','chromosome','genomic_accession','start','end','strand','product_accession',
-              'non-redundant_refseq','related_accession','name','symbol','GeneID','locus_tag','feature_interval_length','product_length',
-              'attributes','gene','protein_coding']                 
-FT = pd.read_csv(FT_file_path,sep='\t',comment='#',names=FT_headers)
-FT = FT.loc[FT['feature'] == 'CDS'].reset_index(drop=True)
+FT_files = glob.glob(os.path.join(FT_folder_path,'*_feature_table.txt'))
+FT = pd.concat([pd.read_csv(file, sep='\t', usecols=['# feature', 'non-redundant_refseq','assembly','genomic_accession']) for file in FT_files])
+FT = FT[FT['# feature'] == 'CDS']
 
 phmmer_hits = {}
 for record in SearchIO.parse(phmmer_file,'hmmer3-tab'):
     hits = {x.id for x in record.hits}
     phmmer_hits[record.id] = hits
 all_hits = {hit for one_set_of_hits in phmmer_hits.values() for hit in one_set_of_hits}
+
 FT_hits = FT[FT['non-redundant_refseq'].isin(all_hits)]
 
 
 found_systems = []
-for accession, group in FT_hits.groupby('genomic_accession'):
+for genomic_acc, group in FT_hits.groupby('genomic_accession'):
+    assembly_acc = group.reset_index().at[0,'assembly']
     skip_search = False
     indices_in_ft = {}
     for protein_id, hits_set in phmmer_hits.items():
@@ -48,23 +48,23 @@ for accession, group in FT_hits.groupby('genomic_accession'):
         continue
         
     if len(indices_in_ft) == 1:
-        found_systems.append((accession,Acc2Taxid[accession]))
+        found_systems.append((assembly_acc,Acc2Taxid[assembly_acc]))
         continue
-    
+                            
     search_dist = len(prot_names) + buff
-    near_another = {prot_id: False for prot_id in indices_in_ft.keys()}
-    for protein_i in indices_in_ft:
-        i_indices = indices_in_ft[protein_i] 
-        for protein_j in indices_in_ft:
+    near_another = {protein_id: False for protein_id in indices_in_ft}
+    for protein_i, i_indices in indices_in_ft.items():
+        i_array = np.array(i_indices)
+        for protein_j, j_indices in indices_in_ft.items():
             if protein_i != protein_j:
-                j_indices = indices_in_ft[protein_j]
-                for index_i in i_indices:
-                    for index_j in j_indices:
-                        if abs(index_i-index_j) <= search_dist:
-                            near_another[protein_i] = True
-                            near_another[protein_j] = True
+                j_array = np.array(j_indices)
+                dist_matrix = np.abs(i_array[:,None] - j_array)
+                if (dist_matrix <= search_dist).any():
+                    near_another[protein_i] = True
+                    near_another[protein_j] = True
+
     if all(near_another.values()):
-        found_systems.append((accession,Acc2Taxid[accession])
+        found_systems.append((assembly_acc,Acc2Taxid[assembly_acc]))
                              
 found_systems = pd.DataFrame(found_systems,columns=['Accession','TaxID'])
 found_systems.to_csv(out,sep='\t',index=False)

@@ -1,0 +1,29 @@
+Assuming unrestricted shared filesystem usage.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+feature_table_search        1
+total                       1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Nov 14 09:32:04 2024]
+localrule feature_table_search:
+    input: phmmer_result/CmdTAC_phmmer.txt, /home/gridsan/cdoering/LaubLab_shared/all_refseq_feature_tables, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_genomes_with_system.txt
+    jobid: 0
+    reason: Missing output files: results/CmdTAC_genomes_with_system.txt
+    threads: 48
+    resources: tmpdir=/state/partition1/slurm_tmp/27375960.4294967291.0
+
+Loading relevant files and databases...
+Traceback (most recent call last):
+  File "/home/gridsan/cdoering/TaxFinder/.snakemake/scripts/tmpy4kgh2m5.find_systems_in_FT.py", line 37, in <module>
+    phmmer_hits_as_files = {proteinID:set().union(*[prot2file[single_hit] for single_hit in hit_set]) for proteinID,hit_set in phmmer_hits.items()}
+                                                    ~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'POY42012.1'

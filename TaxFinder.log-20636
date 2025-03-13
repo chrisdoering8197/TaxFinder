@@ -1,0 +1,57 @@
+Assuming unrestricted shared filesystem usage.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job                     count
+--------------------  -------
+all                         1
+feature_table_search        1
+phylo_tree                  1
+total                       3
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 09:28:17 2025]
+localrule feature_table_search:
+    input: phmmer_result/CmdTAC_phmmer.txt, /home/gridsan/cdoering/LaubLab_shared/All_RefSeq_Assemblies_Accessions.parquet, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_genomes_with_system.parquet
+    jobid: 2
+    reason: Missing output files: results/CmdTAC_genomes_with_system.parquet
+    threads: 48
+    resources: tmpdir=/state/partition1/slurm_tmp/20636.4294967291.0
+
+[Thu Mar 13 09:37:53 2025]
+Finished job 2.
+1 of 3 steps (33%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 09:37:53 2025]
+localrule phylo_tree:
+    input: results/CmdTAC_genomes_with_system.parquet, /home/gridsan/cdoering/LaubLab_shared/assembly_summary.txt
+    output: results/CmdTAC_tree.newick, results/CmdTAC_tree.svg
+    jobid: 1
+    reason: Missing output files: results/CmdTAC_tree.svg; Input files updated by another job: results/CmdTAC_genomes_with_system.parquet
+    wildcards: SYSNAME=CmdTAC
+    resources: tmpdir=/state/partition1/slurm_tmp/20636.4294967291.0
+
+[Thu Mar 13 09:39:04 2025]
+Finished job 1.
+2 of 3 steps (67%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Mar 13 09:39:04 2025]
+localrule all:
+    input: results/CmdTAC_tree.svg
+    jobid: 0
+    reason: Input files updated by another job: results/CmdTAC_tree.svg
+    resources: tmpdir=/state/partition1/slurm_tmp/20636.4294967291.0
+
+[Thu Mar 13 09:39:04 2025]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: .snakemake/log/2025-03-13T092816.219921.snakemake.log
