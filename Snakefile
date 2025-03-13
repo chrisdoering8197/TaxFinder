@@ -17,31 +17,41 @@ rule decompress_taxonomy_files:
     shell:
         "tar -xzf taxdump.tar.gz -C taxon_db"
     
-rule isolate_system_fasta:
+rule isolate_system:
     input:
-        config["fasta_file"]
+        config["input_file"]
     output:
-        f"input_fasta/{SYSNAME}.faa"
+        f"input_file/{SYSNAME}_key.txt",
+        f"input_file/{SYSNAME}.{'hmm' if os.path.splitext(config['input_file'])[1] == '.hmm' else 'faa'}"
     params:
         protein_names=config["system_proteins"]
     script:
-        "scripts/isolate_system_fasta.py"
+        "scripts/isolate_system.py"
         
-rule phmmer_search:
+rule hmmer_search:
     input:
-        fasta=f"input_fasta/{SYSNAME}.faa",
+        sys=f"input_file/{SYSNAME}.{'hmm' if os.path.splitext(config['input_file'])[1] == '.hmm' else 'faa'}",
         db=os.path.expandvars(config["path_to_protein_db"])
     output:
-        f"phmmer_result/{SYSNAME}_phmmer.txt"
+        f"hmmer_result/{SYSNAME}_hmmer.txt"
     params:
-        eval=config["phmmer_eval"]
+        eval=config["hmmer_eval"]
     threads: 48
     shell:
-        "phmmer --tblout {output} -E {params.eval} --cpu {threads} {input.fasta} {input.db}"
+        """
+        if [[ {input.sys} == *.faa ]]; then 
+            phmmer -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
+        elif [[ {input.sys} == *.hmm ]]; then
+            hmmpress {input.sys};
+            hmmscan -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
+        else
+            echo 'No input file found';
+        fi
+        """
         
 rule feature_table_search:
     input:
-        phmmer=f"phmmer_result/{SYSNAME}_phmmer.txt",
+        hmmer=f"hmmer_result/{SYSNAME}_hmmer.txt",
         FT=os.path.expandvars(config["path_to_ft"]),
         taxa=os.path.expandvars(config["path_to_taxa_file"])
     output:

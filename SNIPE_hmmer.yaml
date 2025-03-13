@@ -1,3 +1,13 @@
+#INPUTS: Change these for your specific system search
+
+system_name: "SNIPE"
+
+#Names of each protein in the system as they appear in the fasta (after the '>' but before any spaces) or hmm (under the NAME section) file. Can add more lines as needed
+system_proteins:
+  - PD-Lambda-1__PD-Lambda-1
+
+input_file: /home/gridsan/cdoering/TaxFinder/SNIPE.hmm
+
 #SEARCH PARAMETERS: Varibles that can be modified for your search. Usually fine to leave as is
 
 hmmer_eval: 0.001
