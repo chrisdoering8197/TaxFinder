@@ -3,7 +3,7 @@ import pandas as pd
 from Bio import SearchIO
 from snakemake.script import snakemake
 
-phmmer_file = snakemake.input[0]
+hmmer_file = snakemake.input[0]
 FT_file_path = snakemake.input[1]
 taxa_file_path = snakemake.input[2]
 out = snakemake.output[0]
@@ -19,12 +19,12 @@ Acc2Taxid = assemblySums.set_index('#assembly_accession')['species_taxid'].to_di
 FT = pd.read_parquet(FT_file_path,columns=['non-redundant_refseq','assembly','genomic_accession'])
 FT.reset_index(drop=True,inplace=True)
 
-#Read in phmmer hits as dictionary
-phmmer_hits = {}
+#Read in hmmer hits as dictionary
+hmmer_hits = {}
 for record in SearchIO.parse(phmmer_file,'hmmer3-tab'):
     hits = {x.id for x in record.hits}
-    phmmer_hits[record.id] = hits
-all_hits = {hit for one_set_of_hits in phmmer_hits.values() for hit in one_set_of_hits}
+    hmmer_hits[record.id] = hits
+all_hits = {hit for one_set_of_hits in hmmer_hits.values() for hit in one_set_of_hits}
 
 #Filter FT to only include hits
 FT_hits = FT[FT['non-redundant_refseq'].isin(all_hits)]
@@ -35,7 +35,7 @@ for genomic_acc, group in FT_hits.groupby('genomic_accession'):
     assembly_acc = group.reset_index().at[0,'assembly']
     skip_search = False
     indices_in_ft = {}
-    for protein_id, hits_set in phmmer_hits.items():
+    for protein_id, hits_set in hmmer_hits.items():
         overlapping_hits = set(group['non-redundant_refseq']).intersection(hits_set)
         if len(overlapping_hits) == 0: #If any of the proteins are not present stop this specific search
             skip_search = True
