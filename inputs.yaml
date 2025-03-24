@@ -1,0 +1,10 @@
+#INPUTS: Change these for your specific system search
+
+system_name: "CmdTAC"
+
+#Names of each protein in the system as they appear in the fasta (after the '>' but before any spaces) or hmm (under the NAME section) file. Can add more lines as needed
+system_proteins:
+  - PD-T4-9_A
+  - PD-T4-9_C
+
+input_file: /home/gridsan/cdoering/TaxFinder/CmdTAC.faa

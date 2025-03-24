@@ -1,4 +1,4 @@
-configfile: "parameters.yaml"
+configfile: "config/parameters.yaml"
 conda: "taxfinder.yaml"
 SYSNAME=config['system_name']
 
@@ -21,7 +21,6 @@ rule isolate_system:
     input:
         config["input_file"]
     output:
-        f"input_file/{SYSNAME}_key.txt",
         f"input_file/{SYSNAME}.{'hmm' if os.path.splitext(config['input_file'])[1] == '.hmm' else 'faa'}"
     params:
         protein_names=config["system_proteins"]
@@ -42,7 +41,6 @@ rule hmmer_search:
         if [[ {input.sys} == *.faa ]]; then 
             phmmer -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
         elif [[ {input.sys} == *.hmm ]]; then
-            hmmpress {input.sys};
             hmmscan -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
         else
             echo 'No input file found';
