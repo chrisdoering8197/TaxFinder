@@ -29,7 +29,7 @@ taxid.rename(columns = {'#assembly_accession':'Accession','species_taxid':'TaxID
 taxid['Hits'] = taxid['Accession'].isin(hit_taxids['Accession'])
 
 #Get lineage information for each TaxID
-lineages = pytaxonkit.lineage(taxid['TaxID'].tolist(),formatstr="{K};{p};{c};{o};{f};{g};{s}",fill_missing=True,data_dir='taxon_db/')
+lineages = pytaxonkit.lineage(taxid['TaxID'].tolist(),formatstr="{K};{p};{c};{o};{f};{g};{s}",fill_missing=True,data_dir='databases/')
 lineages = lineages[~lineages['Lineage'].isnull()] #Drop empty rows
 lineages = lineages[lineages['FullLineageTaxIDs'].apply(lambda x: True if x.split(';')[1] == '2' else False)] #Check if species belongs to Bacteria
 lineage_dict = dict(zip(lineages['TaxID'],lineages['Lineage']))
