@@ -1,8 +1,9 @@
 #!/bin/bash
 
 #SBATCH --exclusive
-#SBATCH -o TaxFinder.log-%j
+#SBATCH -o AbiE.log-%j
 #SBATCH -c 48
+#SBATCH --time=96:00:00
 
 source /etc/profile
 module unload anaconda

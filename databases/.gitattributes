@@ -1,0 +1,2 @@
+all_refseq_assemblies_prot.faa.gz filter=lfs diff=lfs merge=lfs -text
+taxdump.tar.gz filter=lfs diff=lfs merge=lfs -text
