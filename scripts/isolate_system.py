@@ -24,7 +24,7 @@ elif file_ext == '.hmm':
         for name in protein_names:
             f.write(name+'\n')
     os.system(f'hmmfetch -f {original_file} {key_file} > {output_name}')
-    os.system(f'hmmpress {output_name}')
+    # os.system(f'hmmpress {output_name}')
     os.system(f'rm {key_file}')
 
 else:

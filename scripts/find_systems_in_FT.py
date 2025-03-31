@@ -21,7 +21,7 @@ FT.reset_index(drop=True,inplace=True)
 
 #Read in hmmer hits as dictionary
 hmmer_hits = {}
-for record in SearchIO.parse(phmmer_file,'hmmer3-tab'):
+for record in SearchIO.parse(hmmer_file,'hmmer3-tab'):
     hits = {x.id for x in record.hits}
     hmmer_hits[record.id] = hits
 all_hits = {hit for one_set_of_hits in hmmer_hits.values() for hit in one_set_of_hits}

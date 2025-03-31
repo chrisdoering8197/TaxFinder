@@ -13,7 +13,7 @@ min_final_rank_size: 10
 
 #FILE PATHS: Locations of required databases. If running on SuperCloud should be ok to leave as is.
 
-path_to_protein_db: $HOME/TaxFinder/databases/all_refseq_assemblies_prot.faa
+path_to_protein_db: $HOME/LaubLab_shared/nr_protein
 
 path_to_taxa_file: $HOME/LaubLab_shared/assembly_summary.txt
 

@@ -8,14 +8,14 @@ rule all:
         
 rule decompress_taxonomy_files:
     input:
-        "taxdump.tar.gz"
+        tar="databases/taxdump.tar.gz"
     output:
-        "taxon_db/names.dmp",
-        "taxon_db/nodes.dmp",
-        "taxon_db/delnodes.dmp",
-        "taxon_db/merged.dmp"
+        "databases/names.dmp",
+        "databases/nodes.dmp",
+        "databases/delnodes.dmp",
+        "databases/merged.dmp"
     shell:
-        "tar -xzf taxdump.tar.gz -C taxon_db"
+        "tar -xzf {input.tar} -C taxon_db"
     
 rule isolate_system:
     input:
@@ -41,7 +41,7 @@ rule hmmer_search:
         if [[ {input.sys} == *.faa ]]; then 
             phmmer -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
         elif [[ {input.sys} == *.hmm ]]; then
-            hmmscan -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
+            hmmsearch -o /dev/null --tblout {output} -E {params.eval} --cpu {threads} {input.sys} {input.db};
         else
             echo 'No input file found';
         fi
